@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link, Navigate } from "react-router-dom";
-import { User, Calendar, Heart, KeyRound, LogOut } from "lucide-react";
+import { Calendar } from "lucide-react";
 import api, { formatError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
+const TABS = [
+  { k: "profile", t: "Profile" },
+  { k: "bookings", t: "Trips" },
+  { k: "wishlist", t: "Wishlist" },
+];
+
 export default function ProfilePage() {
-  const { user, logout, setUser } = useAuth();
+  const { user, setUser } = useAuth();
   const [sp, setSp] = useSearchParams();
   const tab = sp.get("tab") || "profile";
 
@@ -13,57 +19,94 @@ export default function ProfilePage() {
   if (!user) return <Navigate to="/" />;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 lg:px-10 py-10" data-testid="profile-page">
-      <h1 className="font-serif text-4xl mb-8">My Account</h1>
-      <div className="grid md:grid-cols-[260px_1fr] gap-10">
-        <aside className="border border-stone-200 bg-white p-2 h-fit">
-          {[
-            { k: "profile", t: "Profile", i: User },
-            { k: "bookings", t: "My Bookings", i: Calendar },
-            { k: "wishlist", t: "Wishlist", i: Heart },
-            { k: "password", t: "Change Password", i: KeyRound },
-          ].map((m) => (
-            <button key={m.k} onClick={() => setSp({ tab: m.k })} className={`w-full flex items-center gap-3 p-3 text-sm text-left ${tab === m.k ? "bg-[var(--ols-secondary)] font-medium" : "hover:bg-stone-50"}`} data-testid={`tab-${m.k}`}>
-              <m.i className="w-4 h-4" /> {m.t}
-            </button>
+    <div className="max-w-4xl mx-auto px-6 lg:px-10 py-10" data-testid="profile-page">
+      {/* Pill Tabs */}
+      <div className="flex justify-center mb-10">
+        <div className="pill-tabs" data-testid="profile-tabs">
+          {TABS.map((m) => (
+            <button key={m.k} onClick={() => setSp({ tab: m.k })} className={`pill-tab ${tab === m.k ? "active" : ""}`} data-testid={`tab-${m.k}`}>{m.t}</button>
           ))}
-          <button onClick={logout} className="w-full flex items-center gap-3 p-3 text-sm text-left text-red-700 border-t border-stone-200" data-testid="profile-logout">
-            <LogOut className="w-4 h-4" /> Logout
-          </button>
-        </aside>
-        <main>
-          {tab === "profile" && <ProfileTab user={user} setUser={setUser} />}
-          {tab === "bookings" && <BookingsTab />}
-          {tab === "wishlist" && <WishlistTab />}
-          {tab === "password" && <PasswordTab />}
-        </main>
+        </div>
       </div>
+
+      {tab === "profile" && <ProfileTab user={user} setUser={setUser} />}
+      {tab === "bookings" && <BookingsTab />}
+      {tab === "wishlist" && <WishlistTab />}
     </div>
   );
 }
 
+function FloatingInput({ label, required, ...props }) {
+  const [focused, setFocused] = useState(false);
+  const filled = props.value && String(props.value).length > 0;
+  return (
+    <label className="block relative">
+      <div className={`border rounded-md px-3 pt-5 pb-2 transition ${focused ? "border-stone-900" : "border-stone-300"}`}>
+        <div className={`absolute left-3 transition-all pointer-events-none ${focused || filled ? "text-[0.65rem] top-1.5 text-stone-500" : "top-3.5 text-sm text-stone-500"}`}>
+          {label}{required && <span className="text-red-500"> *</span>}
+        </div>
+        <input
+          {...props}
+          onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+          className="w-full outline-none bg-transparent text-sm"
+        />
+      </div>
+    </label>
+  );
+}
+
 function ProfileTab({ user, setUser }) {
-  const [form, setForm] = useState({ name: user.name || "", phone: user.phone || "" });
+  const [form, setForm] = useState({
+    first_name: user.name?.split(" ")[0] || "",
+    last_name: user.name?.split(" ").slice(1).join(" ") || "",
+    gender: user.gender || "",
+    dob: user.dob || "",
+    email: user.email,
+    city: user.city || "",
+    phone: user.phone || "",
+  });
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
+
   const save = async (e) => {
     e.preventDefault();
     setMsg(""); setErr("");
     try {
-      const { data } = await api.put("/auth/profile", form);
+      const name = [form.first_name, form.last_name].filter(Boolean).join(" ");
+      const { data } = await api.put("/auth/profile", { name, phone: form.phone });
       setUser(data);
       setMsg("Profile updated");
     } catch (e) { setErr(formatError(e)); }
   };
+
   return (
-    <form onSubmit={save} className="bg-white border border-stone-200 p-8 max-w-xl space-y-4" data-testid="profile-form">
-      <div className="font-serif text-2xl mb-2">Personal information</div>
-      <Input label="Full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} testid="profile-name" />
-      <Input label="Email" value={user.email} disabled testid="profile-email" />
-      <Input label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} testid="profile-phone" />
+    <form onSubmit={save} className="space-y-4 max-w-xl mx-auto" data-testid="profile-form">
+      <FloatingInput label="First Name" required value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} data-testid="profile-first-name" />
+      <FloatingInput label="Last Name" required value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} data-testid="profile-last-name" />
+      <div className="grid grid-cols-2 gap-3">
+        <label className="block relative">
+          <div className="border rounded-md px-3 pt-5 pb-2 border-stone-300">
+            <div className="absolute left-3 top-1.5 text-[0.65rem] text-stone-500">Gender <span className="text-red-500">*</span></div>
+            <select value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value })} className="w-full outline-none bg-transparent text-sm" data-testid="profile-gender">
+              <option value="">Select</option>
+              <option>Male</option><option>Female</option><option>Other</option>
+            </select>
+          </div>
+        </label>
+        <FloatingInput label="Date of birth" required type="date" value={form.dob} onChange={(e) => setForm({ ...form, dob: e.target.value })} data-testid="profile-dob" />
+      </div>
+      <FloatingInput label="Email ID" required type="email" value={form.email} disabled data-testid="profile-email" />
+      <FloatingInput label="Residential City" required value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} data-testid="profile-city" />
+      <div className="grid grid-cols-[80px_1fr] gap-3">
+        <div className="border border-stone-300 rounded-md px-3 py-3 text-sm flex items-center justify-center">+91</div>
+        <FloatingInput label="Mobile Number" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} data-testid="profile-phone" />
+      </div>
+
       {msg && <div className="text-sm text-emerald-700">{msg}</div>}
       {err && <div className="text-sm text-red-700">{err}</div>}
-      <button className="btn-primary" data-testid="profile-save">Save changes</button>
+      <div className="flex justify-center pt-2">
+        <button className="btn-primary !rounded-md px-8" data-testid="profile-save">Update</button>
+      </div>
     </form>
   );
 }
@@ -88,24 +131,30 @@ function BookingsTab() {
   };
   return (
     <div data-testid="bookings-tab">
-      <div className="flex gap-2 mb-6 text-sm">
+      <div className="flex gap-2 mb-6 text-sm justify-center flex-wrap">
         {[["all","All"],["upcoming","Upcoming"],["completed","Completed"],["cancelled","Cancelled"]].map(([k,t]) => (
-          <button key={k} onClick={() => setFilter(k)} className={`px-3 py-1 border ${filter===k?"bg-stone-900 text-white border-stone-900":"border-stone-300"}`} data-testid={`bookings-${k}`}>{t}</button>
+          <button key={k} onClick={() => setFilter(k)} className={`px-4 py-1.5 rounded-full text-sm font-medium ${filter===k?"bg-stone-900 text-white":"bg-stone-100 hover:bg-stone-200"}`} data-testid={`bookings-${k}`}>{t}</button>
         ))}
       </div>
-      {loading ? <div className="text-stone-500">Loading…</div> : filtered.length === 0 ? <div className="text-stone-500 border border-dashed border-stone-300 p-10 text-center">No bookings.</div> : (
+      {loading ? <div className="text-stone-500">Loading…</div> : filtered.length === 0 ? (
+        <div className="border border-dashed border-stone-300 p-12 text-center text-stone-500 rounded-2xl">
+          <Calendar className="w-10 h-10 mx-auto mb-3 text-stone-300" />
+          No trips yet. Start exploring!
+          <div><Link to="/search" className="btn-outline mt-4">Browse Stays</Link></div>
+        </div>
+      ) : (
         <div className="space-y-4">
           {filtered.map((b) => (
-            <div key={b.id} className="bg-white border border-stone-200 p-5 grid md:grid-cols-[120px_1fr_auto] gap-5 items-center" data-testid={`booking-${b.id}`}>
-              {b.property_image && <img src={b.property_image} alt="" className="w-full md:w-[120px] h-24 object-cover" />}
+            <div key={b.id} className="bg-white border border-stone-200 rounded-2xl p-4 grid md:grid-cols-[140px_1fr_auto] gap-4 items-center" data-testid={`booking-${b.id}`}>
+              {b.property_image && <img src={b.property_image} alt="" className="w-full md:w-[140px] h-28 object-cover rounded-xl" />}
               <div>
-                <div className="ols-label text-[0.6rem] mb-1">{b.booking_number}</div>
-                <div className="font-serif text-xl">{b.property_title}</div>
+                <div className="text-[0.6rem] text-stone-500 uppercase tracking-wider">{b.booking_number}</div>
+                <div className="font-display text-xl mt-0.5">{b.property_title}</div>
                 <div className="text-xs text-stone-500 mt-1">{b.room_name} • {b.checkin} → {b.checkout} • {b.guests} guests</div>
-                <div className="text-xs mt-1"><span className={`px-2 py-0.5 ${b.status==="cancelled"?"bg-red-50 text-red-700":"bg-emerald-50 text-emerald-700"}`}>{b.status}</span></div>
+                <div className="text-xs mt-2"><span className={`px-2 py-0.5 rounded-full ${b.status==="cancelled"?"bg-red-50 text-red-700":"bg-emerald-50 text-emerald-700"}`}>{b.status}</span></div>
               </div>
               <div className="text-right">
-                <div className="font-serif text-xl">${b.amount}</div>
+                <div className="font-display text-xl">${b.amount}</div>
                 <div className="text-xs text-stone-500">{b.payment_status}</div>
                 {b.status !== "cancelled" && new Date(b.checkin) > new Date() && (
                   <button onClick={() => cancel(b.id)} className="text-xs text-red-700 underline mt-2" data-testid={`cancel-${b.id}`}>Cancel</button>
@@ -124,52 +173,22 @@ function WishlistTab() {
   useEffect(() => { api.get("/wishlist").then((r) => setItems(r.data)); }, []);
   return (
     <div data-testid="wishlist-tab">
-      {items.length === 0 ? <div className="text-stone-500 border border-dashed border-stone-300 p-10 text-center">Your wishlist is empty.</div> : (
-        <div className="grid md:grid-cols-2 gap-5">
+      {items.length === 0 ? (
+        <div className="border border-dashed border-stone-300 p-12 text-center text-stone-500 rounded-2xl">Your wishlist is empty. <Link to="/search" className="text-stone-900 underline">Discover stays</Link></div>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
           {items.map((p) => (
-            <Link key={p.id} to={`/property/${p.slug}`} className="bg-white border border-stone-200 overflow-hidden flex">
-              <img src={p.images?.[0]} alt="" className="w-32 h-32 object-cover" />
+            <Link key={p.id} to={`/property/${p.slug}`} className="bg-white border border-stone-200 rounded-2xl overflow-hidden flex hover:shadow-lg transition">
+              <img src={p.images?.[0]} alt="" className="w-36 h-36 object-cover" />
               <div className="p-4 flex-1">
-                <div className="font-serif text-lg">{p.title}</div>
+                <div className="font-display text-lg">{p.title}</div>
                 <div className="text-xs text-stone-500">{p.location}</div>
-                <div className="font-serif text-lg mt-2">${p.starting_price}/night</div>
+                <div className="font-display text-lg mt-3">${p.starting_price}<span className="text-xs text-stone-500 font-medium">/night</span></div>
               </div>
             </Link>
           ))}
         </div>
       )}
     </div>
-  );
-}
-
-function PasswordTab() {
-  const [form, setForm] = useState({ current_password: "", new_password: "" });
-  const [msg, setMsg] = useState(""); const [err, setErr] = useState("");
-  const submit = async (e) => {
-    e.preventDefault(); setMsg(""); setErr("");
-    try {
-      await api.post("/auth/change-password", form);
-      setMsg("Password updated");
-      setForm({ current_password: "", new_password: "" });
-    } catch (e) { setErr(formatError(e)); }
-  };
-  return (
-    <form onSubmit={submit} className="bg-white border border-stone-200 p-8 max-w-xl space-y-4" data-testid="password-form">
-      <div className="font-serif text-2xl mb-2">Change password</div>
-      <Input type="password" label="Current password" value={form.current_password} onChange={(e) => setForm({ ...form, current_password: e.target.value })} required testid="current-password" />
-      <Input type="password" label="New password" value={form.new_password} onChange={(e) => setForm({ ...form, new_password: e.target.value })} required testid="new-password" />
-      {msg && <div className="text-sm text-emerald-700">{msg}</div>}
-      {err && <div className="text-sm text-red-700">{err}</div>}
-      <button className="btn-primary" data-testid="password-save">Update password</button>
-    </form>
-  );
-}
-
-function Input({ label, testid, ...props }) {
-  return (
-    <label className="block">
-      <div className="ols-label mb-1">{label}</div>
-      <input {...props} className="w-full border border-stone-300 px-3 py-2 text-sm outline-none focus:border-[var(--ols-primary)] disabled:bg-stone-100" data-testid={testid} />
-    </label>
   );
 }
