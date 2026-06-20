@@ -1,0 +1,132 @@
+{
+  "project_name": "OneLightStays",
+  "domain": "Premium Hospitality Booking Platform",
+  "theme": "Light",
+  "archetype": "Archetype 1: Organic & Earthy",
+  "brand_personality": "Premium, serene, warm, aspirational, editorial.",
+  "colors": {
+    "background": "#FAF9F6",
+    "surface": "#FFFFFF",
+    "primary": "#4A5D23",
+    "primary_hover": "#3A4A1C",
+    "secondary": "#E5E5DF",
+    "accent": "#C17767",
+    "text_primary": "#1C1917",
+    "text_secondary": "#57534E",
+    "border": "#E7E5E4",
+    "glass_bg": "rgba(255, 255, 255, 0.8)"
+  },
+  "typography": {
+    "heading_font": "Cormorant Garamond",
+    "body_font": "Manrope",
+    "rules": {
+      "h1": "text-5xl sm:text-6xl font-serif tracking-tighter text-[#1C1917]",
+      "h2": "text-3xl sm:text-4xl font-serif tracking-tight text-[#1C1917]",
+      "h3": "text-xl sm:text-2xl font-serif tracking-tight text-[#1C1917]",
+      "body": "text-base font-sans text-[#57534E] leading-relaxed",
+      "labels": "text-xs font-sans tracking-[0.2em] uppercase text-[#57534E]"
+    }
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous spacing. Use p-8 to p-16 for containers. Let the property images breathe. Never fill 100% of the grid perfectly.",
+    "grid_modes": {
+      "gallery": "Bento 'Tetris' grid. Mix col-span-full, col-span-4, and col-span-2 to create asymmetry.",
+      "featured_properties": "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12",
+      "dashboard": "Strict grid hierarchy, dense and compact spacing. grid-cols-1 md:grid-cols-3 gap-6"
+    },
+    "hero_overlay": "Max overlay opacity: bg-black/30 or gradient overlay bg-gradient-to-t from-black/60 via-black/20 to-transparent. Never go darker to keep image visible."
+  },
+  "surfaces": {
+    "header": "Crystal Glass: backdrop-blur-xl bg-white/80 backdrop-saturate-150 with a 1px delicate bottom border border-black/5",
+    "property_cards": "Flat background, 1px subtle border border-stone-200, no shadow initially. On hover: -translate-y-1, shadow-lg, border color darkens.",
+    "booking_widget": "Solid white background, rounded-lg, shadow-[0_8px_32px_rgba(0,0,0,0.08)], p-6 or p-8. Sticky on desktop."
+  },
+  "interactions_and_motion": {
+    "scrolling": "Use lenis for smooth momentum scrolling on marketing pages.",
+    "hover_states": "Images scale up slightly (scale-105 transition-transform duration-500) inside overflow-hidden containers. Buttons invert colors.",
+    "page_transitions": "Subtle fade and slide-up (translate-y-4 to 0) for lists and grids.",
+    "accessibility": "Respect prefers-reduced-motion. High contrast focus states."
+  },
+  "icons_and_assets": {
+    "library": "lucide-react",
+    "style": "Minimalist, stroke-width 1.5, matching text_secondary color."
+  },
+  "components_strategy": {
+    "ui_library": "shadcn/ui heavily customized (React .js files, no .tsx)",
+    "buttons": "rounded-none or rounded-sm for a high-end editorial feel. Primary button uses #4A5D23.",
+    "forms": "Use Shadcn Input/Select. Flat design, no heavy drop shadows on inputs.",
+    "date_picker": "Shadcn Calendar component inside a Popover. Do not use native HTML input type='date'.",
+    "modals": "Auth modal uses Shadcn Dialog. Backdrop blur on the overlay."
+  },
+  "media_urls": {
+    "hero_carousel": [
+      {
+        "url": "https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjB2aWxsYSUyMHBvb2x8ZW58MHx8fHwxNzgxOTUxNzEzfDA&ixlib=rb-4.1.0&q=85",
+        "description": "White luxury concrete villa with pool",
+        "category": "hero"
+      },
+      {
+        "url": "https://images.pexels.com/photos/28054849/pexels-photo-28054849.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Elegant stone villa at twilight",
+        "category": "hero"
+      }
+    ],
+    "featured_properties": [
+      {
+        "url": "https://images.unsplash.com/photo-1544984243-ec57ea16fe25?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjB2aWxsYSUyMHBvb2x8ZW58MHx8fHwxNzgxOTUxNzEzfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Golden hour pool - featured villa",
+        "category": "property"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1692736933760-8a8a9b8c1b6f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHw0fHxsdXh1cnklMjB2aWxsYSUyMHBvb2x8ZW58MHx8fHwxNzgxOTUxNzEzfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Pool with table and chairs",
+        "category": "property"
+      },
+      {
+        "url": "https://images.pexels.com/photos/28736656/pexels-photo-28736656.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Contemporary villa outdoor pool",
+        "category": "property"
+      }
+    ],
+    "room_categories": [
+      {
+        "url": "https://images.unsplash.com/photo-1750420556288-d0e32a6f517b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBiZWRyb29tJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzgxOTUxNzE0fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Modern bedroom with neutral aesthetic",
+        "category": "room"
+      },
+      {
+        "url": "https://images.pexels.com/photos/34574606/pexels-photo-34574606.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Sophisticated bedroom design with blue walls",
+        "category": "room"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1720420021124-4e18564e070f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjBiZWRyb29tJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzgxOTUxNzE0fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Bedroom with bed and desk",
+        "category": "room"
+      }
+    ],
+    "lifestyle_and_testimonials": [
+      {
+        "url": "https://images.pexels.com/photos/4172886/pexels-photo-4172886.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Couple holding hands by the pool",
+        "category": "lifestyle"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1615039666131-964929ad0f1e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwyfHxjb3VwbGUlMjB2YWNhdGlvbiUyMHJlc29ydHxlbnwwfHx8fDE3ODE5NTE3MTN8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Man sitting on swing chair",
+        "category": "lifestyle"
+      }
+    ]
+  },
+  "testing_rules": {
+    "data_testid": "MANDATORY for all interactive elements (buttons, links, form inputs, booking widgets). Format: kebab-case. Example: data-testid='book-now-button'."
+  },
+  "instructions_to_main_agent": [
+    "You have .js files not .tsx file, so write components in .jsx/.js format.",
+    "Use pure HTML/Tailwind for marketing layout structures to maintain asymmetric flexibility, and Shadcn only for interactive logic components.",
+    "Never use generic sans for headings. Apply Cormorant Garamond via font-serif.",
+    "Do not use generic 'blue' for active states. Keep within the organic earthy palette.",
+    "Ensure 'data-testid' is attached to every single interactive UI node.",
+    "Use the exact URLs from media_urls; do not substitute with dummyimage.com or via.placeholder.com."
+  ]
+}
