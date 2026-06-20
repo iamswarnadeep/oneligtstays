@@ -3,6 +3,7 @@ import { useSearchParams, Link, Navigate } from "react-router-dom";
 import { Calendar } from "lucide-react";
 import api, { formatError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import DatePicker from "@/components/DatePicker";
 
 const TABS = [
   { k: "profile", t: "Profile" },
@@ -93,7 +94,12 @@ function ProfileTab({ user, setUser }) {
             </select>
           </div>
         </label>
-        <FloatingInput label="Date of birth" required type="date" value={form.dob} onChange={(e) => setForm({ ...form, dob: e.target.value })} data-testid="profile-dob" />
+        <label className="block relative">
+          <div className="border rounded-md px-3 pt-5 pb-2 border-stone-300">
+            <div className="absolute left-3 top-1.5 text-[0.65rem] text-stone-500">Date of birth <span className="text-red-500">*</span></div>
+            <DatePicker value={form.dob} onChange={(v) => setForm({ ...form, dob: v })} placeholder="Select date" testid="profile-dob" />
+          </div>
+        </label>
       </div>
       <FloatingInput label="Email ID" required type="email" value={form.email} disabled data-testid="profile-email" />
       <FloatingInput label="Residential City" required value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} data-testid="profile-city" />

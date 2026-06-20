@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Calendar, Users, Search } from "lucide-react";
+import DatePicker from "@/components/DatePicker";
 
 export default function SearchWidget({ compact = false, initial = {} }) {
   const nav = useNavigate();
@@ -28,11 +29,11 @@ export default function SearchWidget({ compact = false, initial = {} }) {
       </div>
       <div>
         <div className="ols-label flex items-center gap-1.5"><Calendar className="w-3 h-3" /> Check-in</div>
-        <input data-testid="search-checkin" type="date" value={checkin} min={today} onChange={(e) => setCheckin(e.target.value)} className="mt-1" />
+        <DatePicker value={checkin} onChange={setCheckin} minDate={today} placeholder="Add date" testid="search-checkin" className="mt-1" />
       </div>
       <div>
         <div className="ols-label flex items-center gap-1.5"><Calendar className="w-3 h-3" /> Check-out</div>
-        <input data-testid="search-checkout" type="date" value={checkout} min={checkin} onChange={(e) => setCheckout(e.target.value)} className="mt-1" />
+        <DatePicker value={checkout} onChange={setCheckout} minDate={checkin || today} placeholder="Add date" testid="search-checkout" className="mt-1" />
       </div>
       <div>
         <div className="ols-label flex items-center gap-1.5"><Users className="w-3 h-3" /> Guests</div>

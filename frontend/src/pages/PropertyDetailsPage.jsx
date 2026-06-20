@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { MapPin, Star, Users, Bed, Bath, Heart, Share2, Maximize2, Calendar, ChevronDown, ChevronUp, Check, ShieldCheck, ArrowRight, ImageIcon, Wifi, Flame, Car, Coffee, Tv, Sparkles, UtensilsCrossed, PawPrint, Phone } from "lucide-react";
 import api, { formatError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import DatePicker from "@/components/DatePicker";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
