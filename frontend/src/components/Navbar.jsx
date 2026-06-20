@@ -87,8 +87,10 @@ export default function Navbar({ onOpenAuth }) {
 
           {/* Get in touch */}
           <div className="relative" onMouseLeave={() => setContactOpen(false)}>
-            <button onMouseEnter={() => setContactOpen(true)} onClick={() => setContactOpen((v) => !v)} className="btn-primary text-sm" data-testid="nav-contact-trigger">
-              <Phone className="w-3.5 h-3.5" /> Get in touch <ChevronDown className="w-3.5 h-3.5" />
+            <button onMouseEnter={() => setContactOpen(true)} onClick={() => setContactOpen((v) => !v)} className="btn-primary text-sm !px-3 md:!px-5 whitespace-nowrap" data-testid="nav-contact-trigger">
+              <Phone className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Get in touch</span>
+              <ChevronDown className="w-3.5 h-3.5 hidden sm:inline" />
             </button>
             {contactOpen && (
               <div className="absolute right-0 top-full pt-3 w-72 z-50" data-testid="contact-dropdown">

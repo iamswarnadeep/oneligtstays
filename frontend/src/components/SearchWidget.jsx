@@ -39,9 +39,11 @@ export default function SearchWidget({ compact = false, initial = {} }) {
         <div className="ols-label flex items-center gap-1.5"><Users className="w-3 h-3" /> Guests</div>
         <input data-testid="search-guests" type="number" min={1} max={20} value={guests} onChange={(e) => setGuests(+e.target.value)} className="mt-1" />
       </div>
-      <button type="submit" className="m-1.5 px-6 bg-stone-900 text-white rounded-full font-semibold text-sm hover:bg-stone-700 flex items-center gap-2" data-testid="search-submit">
-        <Search className="w-4 h-4" /> Search
-      </button>
+      <div className="search-btn-wrap">
+        <button type="submit" className="w-full md:w-auto md:m-0 px-6 py-3 md:py-3 bg-stone-900 text-white rounded-full font-semibold text-sm hover:bg-stone-700 flex items-center justify-center gap-2 whitespace-nowrap" data-testid="search-submit">
+          <Search className="w-4 h-4" /> Search
+        </button>
+      </div>
     </form>
   );
 }
