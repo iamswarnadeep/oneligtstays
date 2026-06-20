@@ -63,11 +63,12 @@ export default function HomePage({ onAuth }) {
             ))}
           </div>
         </div>
-        {/* SEARCH PILL */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 w-full max-w-6xl px-6 lg:px-10 z-10">
-          <SearchWidget />
-        </div>
       </section>
+
+      {/* SEARCH PILL - overlaps hero */}
+      <div className="relative z-10 -mt-12 px-6 lg:px-10">
+        <div className="max-w-6xl mx-auto"><SearchWidget /></div>
+      </div>
 
       <div className="h-20" />
 
