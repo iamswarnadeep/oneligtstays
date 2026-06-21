@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Phone, Mail, MessageCircle, ChevronDown, User, Menu, X, Heart, LogOut, LayoutDashboard, Smartphone } from "lucide-react";
+import { Phone, Mail, MessageCircleMore, ChevronDown, User, Menu, X, Heart, LogOut, LayoutDashboard, Smartphone } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { LOGO_URL, SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY } from "@/lib/brand";
 
