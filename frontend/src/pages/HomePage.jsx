@@ -50,7 +50,7 @@ export default function HomePage({ onAuth }) {
   return (
     <div data-testid="home-page" className="bg-white">
       {/* HERO BANNER WITH VIDEO BACKGROUND */}
-      <section className="relative h-[80vh] min-h-[480px] overflow-hidden">
+      <section className="relative h-[65vh] md:h-[80vh] min-h-[480px] overflow-hidden">
         <video
           src={HERO_VIDEO} poster={HERO_FALLBACK}
           autoPlay muted loop playsInline preload="auto"
