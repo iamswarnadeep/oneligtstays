@@ -63,7 +63,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-10 pt-6 border-t border-stone-800 text-xs">
+        <div className="flex items-center justify-between flex-col md:flex-row gap-6 mt-10 pt-6 border-t border-stone-800 text-xs">
           <div className="flex items-center gap-5 text-stone-400">
             <Link to="/">Privacy</Link>
             <Link to="/">Terms & Conditions</Link>
