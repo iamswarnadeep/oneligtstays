@@ -59,8 +59,8 @@ export default function HomePage({ onAuth }) {
         />
         <div className="absolute inset-0 bg-black/45" />
         <div className="relative h-full max-w-7xl mx-auto px-6 lg:px-10 flex flex-col items-center justify-center text-center">
-          <button onClick={() => setHero((hero - 1 + HEROES.length) % HEROES.length)} className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-transparent flex items-center justify-center text-white border border-white" data-testid="hero-prev"><ChevronLeft className="w-4 h-4" /></button>
-          <button onClick={() => setHero((hero + 1) % HEROES.length)} className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-transparent flex items-center justify-center text-white border border-white" data-testid="hero-next"><ChevronRight className="w-4 h-4" /></button>
+          <button onClick={() => setHero((hero - 1 + HEROES.length) % HEROES.length)} className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-transparent flex items-center justify-center text-white border border-white hover:bg-white hover:text-black" data-testid="hero-prev"><ChevronLeft className="w-4 h-4" /></button>
+          <button onClick={() => setHero((hero + 1) % HEROES.length)} className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-transparent flex items-center justify-center text-white border border-white hover:bg-white hover:text-black" data-testid="hero-next"><ChevronRight className="w-4 h-4" /></button>
           <h1 className="font-display text-4xl md:text-6xl text-white reveal" key={`h-${hero}`}>{HEROES[hero].title}</h1>
           <p className="text-white/90 text-base md:text-lg mt-3 reveal" key={`p-${hero}`}>{HEROES[hero].subtitle}</p>
           <div className="flex gap-1.5 mt-6">
