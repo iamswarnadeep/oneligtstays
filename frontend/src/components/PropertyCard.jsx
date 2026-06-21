@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Heart, MapPin, Star, Bed, Bath, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/api";
+import { inr } from "@/lib/brand";
 import { useState } from "react";
 
 export default function PropertyCard({ property, onAuth, layout = "grid" }) {
@@ -60,7 +61,7 @@ export default function PropertyCard({ property, onAuth, layout = "grid" }) {
           </div>
           <div className="p-6 flex flex-col items-end justify-between bg-stone-50/50 border-l border-stone-100">
             <div className="text-right">
-              <div className="font-display text-2xl">${Math.round(property.starting_price)}</div>
+              <div className="font-display text-2xl">{inr(property.starting_price)}</div>
               <div className="text-xs text-stone-500">Per Night + Taxes</div>
             </div>
             <button className="btn-primary w-full mt-4" data-testid={`view-${property.slug}`}>View</button>
@@ -87,7 +88,7 @@ export default function PropertyCard({ property, onAuth, layout = "grid" }) {
         <div className="flex items-center gap-1 text-xs text-stone-500 mt-1"><MapPin className="w-3 h-3" /> {property.destination}, {property.location?.split(",").pop()?.trim()}</div>
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-stone-100">
           <div>
-            <div className="font-display text-xl text-stone-900">${Math.round(property.starting_price)}<span className="text-xs text-stone-500 font-medium ml-0.5">/night</span></div>
+            <div className="font-display text-xl text-stone-900">{inr(property.starting_price)}<span className="text-xs text-stone-500 font-medium ml-0.5">/night</span></div>
             <div className="text-[0.65rem] text-stone-500 mt-0.5">+ Taxes</div>
           </div>
           <button className="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center hover:bg-stone-700" data-testid={`view-${property.slug}`}>→</button>

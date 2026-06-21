@@ -9,6 +9,8 @@ import SearchResultsPage from "@/pages/SearchResultsPage";
 import PropertyDetailsPage from "@/pages/PropertyDetailsPage";
 import ProfilePage from "@/pages/ProfilePage";
 import AdminLayout from "@/pages/AdminLayout";
+import CheckoutPage from "@/pages/CheckoutPage";
+import OrderConfirmationPage from "@/pages/OrderConfirmationPage";
 import "@/App.css";
 
 function Shell() {
@@ -26,6 +28,8 @@ function Shell() {
               <Route path="/" element={<HomePage onAuth={() => open("login")} />} />
               <Route path="/search" element={<SearchResultsPage onAuth={() => open("login")} />} />
               <Route path="/property/:slug" element={<PropertyDetailsPage onAuth={() => open("login")} />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/booking/:id/confirmation" element={<OrderConfirmationPage />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Routes>
             <Footer />

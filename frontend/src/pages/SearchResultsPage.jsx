@@ -4,6 +4,7 @@ import { SlidersHorizontal, Star, Map, ChevronDown } from "lucide-react";
 import api from "@/lib/api";
 import SearchWidget from "@/components/SearchWidget";
 import PropertyCard from "@/components/PropertyCard";
+import { inr } from "@/lib/brand";
 
 const TYPES = ["villa", "resort", "homestay", "cottage", "hotel"];
 const AMENITIES = ["Private Pool", "Wi-Fi", "Spa", "Breakfast", "Pet Friendly", "Parking", "Fireplace", "Bonfire", "Jacuzzi", "View"];
@@ -79,11 +80,11 @@ export default function SearchResultsPage({ onAuth }) {
             <div className="flex items-center gap-2 mb-3">
               <div className="flex-1 border border-stone-300 rounded-md px-2.5 py-2 text-xs">
                 <div className="text-[0.55rem] text-stone-500 uppercase">From</div>
-                <div>$ {filters.min}</div>
+                <div>{inr(filters.min)}</div>
               </div>
               <div className="flex-1 border border-stone-300 rounded-md px-2.5 py-2 text-xs">
                 <div className="text-[0.55rem] text-stone-500 uppercase">To</div>
-                <div>$ {filters.max}{filters.max === 1000 && "+"}</div>
+                <div>{inr(filters.max)}{filters.max === 1000 && "+"}</div>
               </div>
             </div>
             <input type="range" min={0} max={1000} value={filters.max} onChange={(e) => setFilters({ ...filters, max: +e.target.value })} className="w-full accent-stone-900" data-testid="filter-price" />

@@ -209,6 +209,7 @@ class PropertyIn(BaseModel):
     latitude: float = 0.0
     longitude: float = 0.0
     starting_price: float
+    gst_percent: float = 12.0
     images: List[str] = []
     amenities: List[str] = []
     highlights: List[str] = []
@@ -217,6 +218,28 @@ class PropertyIn(BaseModel):
     faqs: List[dict] = []
     is_featured: bool = False
     status: str = "active"
+
+
+class OfferIn(BaseModel):
+    bank: str
+    title: str
+    sub: str = ""
+    code: str
+    color: str = "from-rose-50 to-amber-50"
+    active: bool = True
+
+
+class PropertyTypeIn(BaseModel):
+    name: str
+    slug: Optional[str] = None
+
+
+class UserAdminIn(BaseModel):
+    name: str
+    email: EmailStr
+    phone: Optional[str] = ""
+    role: str = "user"
+    password: Optional[str] = None
 
 
 class RoomIn(BaseModel):
@@ -238,9 +261,11 @@ class BookingIn(BaseModel):
     checkin: str  # YYYY-MM-DD
     checkout: str
     guests: int = 1
+    rooms_count: int = 1
     guest_name: Optional[str] = None
     guest_phone: Optional[str] = None
     guest_email: Optional[EmailStr] = None
+    payment_method: str = "pay_on_reception"
 
 
 class ReviewIn(BaseModel):
@@ -605,8 +630,10 @@ async def create_booking(payload: BookingIn, user: dict = Depends(get_current_us
     if co <= ci:
         raise HTTPException(400, "Checkout must be after check-in")
     nights = (co - ci).days
-    subtotal = float(room["price_per_night"]) * nights
-    taxes = round(subtotal * 0.12, 2)
+    rooms_count = max(1, min(10, payload.rooms_count))
+    gst_percent = float(prop.get("gst_percent", 12.0))
+    subtotal = float(room["price_per_night"]) * nights * rooms_count
+    taxes = round(subtotal * (gst_percent / 100.0), 2)
     total = round(subtotal + taxes, 2)
     booking_number = "OLS" + str(int(datetime.now(timezone.utc).timestamp()))[-8:] + secrets.token_hex(2).upper()
 
@@ -625,14 +652,16 @@ async def create_booking(payload: BookingIn, user: dict = Depends(get_current_us
         "checkout": payload.checkout,
         "nights": nights,
         "guests": payload.guests,
+        "rooms_count": rooms_count,
         "guest_name": payload.guest_name or user.get("name", ""),
         "guest_phone": payload.guest_phone or user.get("phone", ""),
         "guest_email": payload.guest_email or user["email"],
         "price_per_night": room["price_per_night"],
+        "gst_percent": gst_percent,
         "subtotal": subtotal,
         "taxes": taxes,
         "amount": total,
-        "payment_method": "pay_on_reception",
+        "payment_method": payload.payment_method,
         "payment_status": "pending",
         "status": "confirmed",
         "created_at": datetime.now(timezone.utc),
@@ -785,6 +814,152 @@ async def admin_users(_: dict = Depends(require_admin)):
         u.pop("password_hash", None)
         out.append(serialize(u))
     return out
+
+
+# -----------------------------------------------------------------------------
+# Offers (admin-managed)
+# -----------------------------------------------------------------------------
+@api.get("/offers")
+async def list_offers():
+    items = await db.offers.find({"active": True}).sort("created_at", -1).to_list(50)
+    return [serialize(o) for o in items]
+
+
+@api.get("/admin/offers")
+async def admin_list_offers(_: dict = Depends(require_admin)):
+    items = await db.offers.find().sort("created_at", -1).to_list(200)
+    return [serialize(o) for o in items]
+
+
+@api.post("/admin/offers")
+async def admin_create_offer(payload: OfferIn, _: dict = Depends(require_admin)):
+    doc = payload.model_dump()
+    doc["created_at"] = datetime.now(timezone.utc)
+    res = await db.offers.insert_one(doc)
+    return serialize(await db.offers.find_one({"_id": res.inserted_id}))
+
+
+@api.put("/admin/offers/{offer_id}")
+async def admin_update_offer(offer_id: str, payload: OfferIn, _: dict = Depends(require_admin)):
+    await db.offers.update_one({"_id": ObjectId(offer_id)}, {"$set": payload.model_dump()})
+    return serialize(await db.offers.find_one({"_id": ObjectId(offer_id)}))
+
+
+@api.delete("/admin/offers/{offer_id}")
+async def admin_delete_offer(offer_id: str, _: dict = Depends(require_admin)):
+    await db.offers.delete_one({"_id": ObjectId(offer_id)})
+    return {"message": "deleted"}
+
+
+# -----------------------------------------------------------------------------
+# Property Types (admin-managed)
+# -----------------------------------------------------------------------------
+@api.get("/property-types")
+async def list_property_types():
+    items = await db.property_types.find().sort("name", 1).to_list(100)
+    return [serialize(t) for t in items]
+
+
+@api.post("/admin/property-types")
+async def admin_create_property_type(payload: PropertyTypeIn, _: dict = Depends(require_admin)):
+    doc = payload.model_dump()
+    doc["slug"] = doc.get("slug") or slugify(doc["name"])
+    doc["created_at"] = datetime.now(timezone.utc)
+    res = await db.property_types.insert_one(doc)
+    return serialize(await db.property_types.find_one({"_id": res.inserted_id}))
+
+
+@api.delete("/admin/property-types/{tid}")
+async def admin_delete_property_type(tid: str, _: dict = Depends(require_admin)):
+    await db.property_types.delete_one({"_id": ObjectId(tid)})
+    return {"message": "deleted"}
+
+
+# -----------------------------------------------------------------------------
+# Admin Destinations (update with image)
+# -----------------------------------------------------------------------------
+@api.put("/admin/destinations/{dest_id}")
+async def admin_update_destination(dest_id: str, payload: DestinationIn, _: dict = Depends(require_admin)):
+    doc = payload.model_dump()
+    doc["slug"] = slugify(payload.name)
+    await db.destinations.update_one({"_id": ObjectId(dest_id)}, {"$set": doc})
+    return serialize(await db.destinations.find_one({"_id": ObjectId(dest_id)}))
+
+
+# -----------------------------------------------------------------------------
+# Admin Users CRUD
+# -----------------------------------------------------------------------------
+@api.post("/admin/users")
+async def admin_create_user(payload: UserAdminIn, _: dict = Depends(require_admin)):
+    email = payload.email.lower()
+    if await db.users.find_one({"email": email}):
+        raise HTTPException(400, "Email already exists")
+    doc = {
+        "email": email,
+        "name": payload.name,
+        "phone": payload.phone or "",
+        "role": payload.role if payload.role in {"user", "admin"} else "user",
+        "email_verified": True,
+        "wishlist": [],
+        "password_hash": hash_password(payload.password or "Welcome@123"),
+        "created_at": datetime.now(timezone.utc),
+    }
+    res = await db.users.insert_one(doc)
+    u = await db.users.find_one({"_id": res.inserted_id})
+    u.pop("password_hash", None)
+    return serialize(u)
+
+
+@api.put("/admin/users/{user_id}")
+async def admin_update_user(user_id: str, payload: UserAdminIn, _: dict = Depends(require_admin)):
+    update = {
+        "name": payload.name,
+        "phone": payload.phone or "",
+        "role": payload.role if payload.role in {"user", "admin"} else "user",
+    }
+    if payload.password:
+        update["password_hash"] = hash_password(payload.password)
+    await db.users.update_one({"_id": ObjectId(user_id)}, {"$set": update})
+    u = await db.users.find_one({"_id": ObjectId(user_id)})
+    u.pop("password_hash", None)
+    return serialize(u)
+
+
+@api.delete("/admin/users/{user_id}")
+async def admin_delete_user(user_id: str, _: dict = Depends(require_admin)):
+    await db.users.delete_one({"_id": ObjectId(user_id)})
+    return {"message": "deleted"}
+
+
+@api.get("/admin/bookings/{booking_id}")
+async def admin_booking_detail(booking_id: str, _: dict = Depends(require_admin)):
+    b = await db.bookings.find_one({"_id": ObjectId(booking_id)})
+    if not b:
+        raise HTTPException(404, "Not found")
+    return serialize(b)
+
+
+# -----------------------------------------------------------------------------
+# File Upload (admin)
+# -----------------------------------------------------------------------------
+from fastapi import UploadFile, File as FastFile
+from fastapi.staticfiles import StaticFiles
+import shutil
+
+UPLOAD_DIR = ROOT_DIR / "uploads"
+UPLOAD_DIR.mkdir(exist_ok=True)
+
+
+@api.post("/admin/upload")
+async def admin_upload(file: UploadFile = FastFile(...), _: dict = Depends(require_admin)):
+    ext = (file.filename.rsplit(".", 1)[-1] if "." in file.filename else "jpg").lower()
+    if ext not in {"jpg", "jpeg", "png", "webp", "gif"}:
+        raise HTTPException(400, "Unsupported file type")
+    name = f"{secrets.token_hex(12)}.{ext}"
+    dest = UPLOAD_DIR / name
+    with dest.open("wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    return {"url": f"/api/uploads/{name}", "filename": name}
 
 
 # -----------------------------------------------------------------------------
@@ -1021,6 +1196,7 @@ async def root():
 
 # Register router & CORS
 app.include_router(api)
+app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,

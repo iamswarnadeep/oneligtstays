@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Phone, Mail, MessageCircle, ChevronDown, User, Menu, X, Heart, LogOut, LayoutDashboard, Smartphone } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { LOGO_URL, SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY } from "@/lib/brand";
 
 export default function Navbar({ onOpenAuth }) {
   const { user, logout } = useAuth();
@@ -16,11 +17,7 @@ export default function Navbar({ onOpenAuth }) {
     <header className="glass-header sticky top-0 z-50" data-testid="site-navbar">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-4 flex items-center justify-between gap-6">
         <Link to="/" className="flex items-center" data-testid="navbar-logo">
-          <div className="logo-mark">OLS</div>
-          <div className="ml-2 hidden md:block">
-            <div className="font-display text-base leading-none">OneLightStays</div>
-            <div className="text-[0.6rem] tracking-[0.18em] text-stone-500 mt-1">CRAFTED STAYS</div>
-          </div>
+          <img src={LOGO_URL} alt="OneLightStays" className="h-12 md:h-14 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-7">
@@ -95,11 +92,11 @@ export default function Navbar({ onOpenAuth }) {
             {contactOpen && (
               <div className="absolute right-0 top-full pt-3 w-72 z-50" data-testid="contact-dropdown">
                 <div className="bg-white border border-stone-200 rounded-xl shadow-xl p-2">
-                  <a href="tel:+911800000000" className="flex items-center gap-3 p-3 hover:bg-stone-50 rounded-lg" data-testid="contact-call">
+                  <a href={`tel:${SUPPORT_PHONE}`} className="flex items-center gap-3 p-3 hover:bg-stone-50 rounded-lg" data-testid="contact-call">
                     <div className="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center"><Phone className="w-4 h-4" /></div>
-                    <div><div className="text-sm font-medium">Call us</div><div className="text-xs text-stone-500">+91 1800 000 000</div></div>
+                    <div><div className="text-sm font-medium">Call us</div><div className="text-xs text-stone-500">{SUPPORT_PHONE_DISPLAY}</div></div>
                   </a>
-                  <a href="https://wa.me/911800000000" target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 hover:bg-stone-50 rounded-lg" data-testid="contact-whatsapp">
+                  <a href={`https://wa.me/${SUPPORT_PHONE.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 hover:bg-stone-50 rounded-lg" data-testid="contact-whatsapp">
                     <div className="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center"><MessageCircle className="w-4 h-4" /></div>
                     <div><div className="text-sm font-medium">WhatsApp</div><div className="text-xs text-stone-500">Instant inquiry</div></div>
                   </a>

@@ -4,6 +4,7 @@ import { Calendar } from "lucide-react";
 import api, { formatError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import DatePicker from "@/components/DatePicker";
+import { inr } from "@/lib/brand";
 
 const TABS = [
   { k: "profile", t: "Profile" },
@@ -160,7 +161,7 @@ function BookingsTab() {
                 <div className="text-xs mt-2"><span className={`px-2 py-0.5 rounded-full ${b.status==="cancelled"?"bg-red-50 text-red-700":"bg-emerald-50 text-emerald-700"}`}>{b.status}</span></div>
               </div>
               <div className="text-right">
-                <div className="font-display text-xl">${b.amount}</div>
+                <div className="font-display text-xl">{inr(b.amount)}</div>
                 <div className="text-xs text-stone-500">{b.payment_status}</div>
                 {b.status !== "cancelled" && new Date(b.checkin) > new Date() && (
                   <button onClick={() => cancel(b.id)} className="text-xs text-red-700 underline mt-2" data-testid={`cancel-${b.id}`}>Cancel</button>
@@ -189,7 +190,7 @@ function WishlistTab() {
               <div className="p-4 flex-1">
                 <div className="font-display text-lg">{p.title}</div>
                 <div className="text-xs text-stone-500">{p.location}</div>
-                <div className="font-display text-lg mt-3">${p.starting_price}<span className="text-xs text-stone-500 font-medium">/night</span></div>
+                <div className="font-display text-lg mt-3">{inr(p.starting_price)}<span className="text-xs text-stone-500 font-medium">/night</span></div>
               </div>
             </Link>
           ))}
