@@ -135,3 +135,34 @@ body {
 .badge-pink { background: var(--ols-accent-soft); color: #C81E40; }
 .badge-dark { background: #0A0A0A; color: #fff; }
 .badge-light { background: #F5F5F5; color: #0A0A0A; }
+
+.btn-gradient-animated {
+    background: linear-gradient(270deg, #fea07a, #57a28d);
+    background-size: 400% 400%;
+
+    -webkit-animation: AnimationBtnGrad 0s ease infinite;
+    -moz-animation: AnimationBtnGrad 0s ease infinite;
+    -o-animation: AnimationBtnGrad 0s ease infinite;
+    animation: AnimationBtnGrad 0s ease infinite;
+}
+
+@-webkit-keyframes AnimationBtnGrad {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes AnimationBtnGrad {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-o-keyframes AnimationBtnGrad {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes AnimationBtnGrad {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}

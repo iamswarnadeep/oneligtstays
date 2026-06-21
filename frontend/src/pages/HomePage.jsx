@@ -50,7 +50,7 @@ export default function HomePage({ onAuth }) {
   return (
     <div data-testid="home-page" className="bg-white">
       {/* HERO BANNER WITH VIDEO BACKGROUND */}
-      <section className="relative h-[65vh] md:h-[80vh] min-h-[480px] overflow-hidden">
+      <section className="relative h-[60vh] md:h-[80vh] min-h-[480px] overflow-hidden">
         <video
           src={HERO_VIDEO} poster={HERO_FALLBACK}
           autoPlay muted loop playsInline preload="auto"
@@ -59,8 +59,8 @@ export default function HomePage({ onAuth }) {
         />
         <div className="absolute inset-0 bg-black/45" />
         <div className="relative h-full max-w-7xl mx-auto px-6 lg:px-10 flex flex-col items-center justify-center text-center">
-          <button onClick={() => setHero((hero - 1 + HEROES.length) % HEROES.length)} className="absolute left-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center hover:bg-white" data-testid="hero-prev"><ChevronLeft className="w-5 h-5" /></button>
-          <button onClick={() => setHero((hero + 1) % HEROES.length)} className="absolute right-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center hover:bg-white" data-testid="hero-next"><ChevronRight className="w-5 h-5" /></button>
+          <button onClick={() => setHero((hero - 1 + HEROES.length) % HEROES.length)} className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-transparent flex items-center justify-center text-white border border-white" data-testid="hero-prev"><ChevronLeft className="w-4 h-4" /></button>
+          <button onClick={() => setHero((hero + 1) % HEROES.length)} className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-transparent flex items-center justify-center text-white border border-white" data-testid="hero-next"><ChevronRight className="w-4 h-4" /></button>
           <h1 className="font-display text-4xl md:text-6xl text-white reveal" key={`h-${hero}`}>{HEROES[hero].title}</h1>
           <p className="text-white/90 text-base md:text-lg mt-3 reveal" key={`p-${hero}`}>{HEROES[hero].subtitle}</p>
           <div className="flex gap-1.5 mt-6">
