@@ -146,7 +146,7 @@ export default function PropertyDetailsPage({ onAuth }) {
       </div>
 
       {/* TAB NAV */}
-      <div className="sticky top-[73px] z-30 bg-white border-b border-stone-200">
+      <div className="sticky top-[85px] z-30 bg-white border-b border-stone-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="section-tabs no-scrollbar" data-testid="section-tabs">
             {SECTIONS.map((s) => (

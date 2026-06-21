@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, ArrowLeft, ArrowRight, ShieldCheck } from "lucide-react";
 import api, { formatError } from "@/lib/api";
+import { LOGO_URL } from "@/lib/brand";
 import { useAuth } from "@/context/AuthContext";
 
 export default function AuthModal({ open, onClose, initialMode = "login" }) {
@@ -86,11 +87,13 @@ export default function AuthModal({ open, onClose, initialMode = "login" }) {
           <img src="https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?w=900&q=85" alt="Stay" className="absolute inset-0 w-full h-full object-cover opacity-90" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/50" />
           <div className="relative h-full flex flex-col justify-between p-8 text-white">
-            <div className="logo-mark inline-block">OLS</div>
+            <div className="logo-mark inline-block">
+              <img src={LOGO_URL} alt="OneLightStays" className="h-12 md:h-14 w-auto" />
+            </div>
             <div>
               <div className="font-display text-2xl leading-tight">Book a Stay.<br />Live a Story.</div>
               <div className="text-sm text-white/85 mt-3">Enjoy the luxuries & privacy of a villa with</div>
-              <div className="mt-3 inline-block px-3 py-1.5 border border-dashed border-white/70 rounded-md text-sm font-semibold">Rooms Starting at ₹5,000*</div>
+              <div className="mt-3 inline-block px-3 py-1.5 border border-dashed border-white/70 rounded-md text-sm font-semibold">Rooms Starting at ₹2,000*</div>
             </div>
           </div>
         </div>

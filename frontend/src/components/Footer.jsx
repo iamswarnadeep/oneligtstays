@@ -11,7 +11,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#0A0A0A] text-stone-300 mt-24" data-testid="site-footer">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12">
-        <div className="text-center font-display text-2xl text-white mb-8">Popular Destinations To Rent A Holiday Home in India</div>
+        {/* <div className="text-center font-display text-2xl text-white mb-8">Popular Destinations To Rent A Holiday Home in India</div>
         <div className="grid grid-cols-2 md:grid-cols-7 gap-6 text-xs mb-10 text-center md:text-left">
           {[
             { t: "Villas", l: villas },
@@ -29,36 +29,36 @@ export default function Footer() {
               </ul>
             </div>
           ))}
-        </div>
+        </div> */}
 
-        <div className="grid md:grid-cols-4 gap-8 pt-8 border-t border-stone-800">
+        <div className="grid md:grid-cols-4 gap-8 pt-8 border-stone-800">
           <div>
             <div className="font-semibold text-white mb-3">Top Locations</div>
             <ul className="space-y-1.5 text-stone-400 text-xs">
-              {["Lonavala","Goa","Alibaug","Karjat","Igatpuri","Mahabaleshwar","Mumbai","Pawna","Mussoorie"].map(x => <li key={x}>{x}</li>)}
+              {["Goa","Rishikesh","Ukhimath","Arambol"].map(x => <li key={x}>{x}</li>)}
             </ul>
           </div>
           <div>
             <div className="font-semibold text-white mb-3">Top Collections</div>
             <ul className="space-y-1.5 text-stone-400 text-xs">
-              {["Luxury Villas","Trending This Season","Pet Friendly Villas","Impeccable View Villas","Sea View Villas","Kid Friendly Villas","Getaway Collections"].map(x => <li key={x}>{x}</li>)}
+              {["Rudram Aura","The Long Stay Goa","Weekend GetAway Camps","Great Hill view","Mermaid"].map(x => <li key={x}>{x}</li>)}
             </ul>
           </div>
           <div>
             <div className="font-semibold text-white mb-3">About</div>
             <ul className="space-y-1.5 text-stone-400 text-xs">
-              {["Our Story","Partner With Us","Offers","Corporate Offsites","Events & Experiences","All Brands","Contact Us","Cancellation & Refund Policy"].map(x => <li key={x}>{x}</li>)}
+              {["Offers","Contact Us","Cancellation Policy","Refund Policy"].map(x => <li key={x}>{x}</li>)}
             </ul>
           </div>
           <div>
             <div className="font-semibold text-white mb-3">Travel Guide</div>
-            <div className="bg-stone-900 rounded-md p-3 mb-3">
+            {/* <div className="bg-stone-900 rounded-md p-3 mb-3">
               <div className="text-[0.65rem] text-stone-500 uppercase tracking-wider mb-1">States</div>
               <select className="bg-transparent text-stone-300 text-sm w-full outline-none"><option>Maharashtra</option><option>Kerala</option><option>Karnataka</option></select>
-            </div>
+            </div> */}
             <div className="bg-stone-900 rounded-md p-3">
               <div className="text-[0.65rem] text-stone-500 uppercase tracking-wider mb-1">Cities</div>
-              <select className="bg-transparent text-stone-300 text-sm w-full outline-none"><option>Lonavala</option><option>Pune</option><option>Goa</option></select>
+              <select className="bg-transparent text-stone-300 text-sm w-full outline-none"><option>Goa</option><option>Rishikesh</option><option>Ukhimath</option><option>Arambol</option></select>
             </div>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function Footer() {
             <Link to="/">Privacy</Link>
             <Link to="/">Terms & Conditions</Link>
             <Link to="/">Sitemap</Link>
-            <span>Call Us: +91 1800 000 000</span>
+            <Link to="tel:+91 1800 000 000">Call Us</Link>
           </div>
           <div className="flex items-center gap-3">
             <a href="#" className="hover:text-white"><Instagram className="w-4 h-4" /></a>
