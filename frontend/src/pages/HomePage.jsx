@@ -76,7 +76,7 @@ export default function HomePage({ onAuth }) {
         <div className="max-w-6xl mx-auto"><SearchWidget /></div>
       </div>
 
-      <div className="h-20" />
+      {/* <div className="h-20" /> */}
 
       {/* PICK A DESTINATION (dynamic) */}
       {destinations.length > 0 && (
