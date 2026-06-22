@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Phone, Mail, MessageCircle, ChevronDown, User, Menu, X, Heart, LogOut, LayoutDashboard, Smartphone } from "lucide-react";
+import { Phone, Mail, MessageCircleMore, ChevronDown, User, Menu, X, Heart, LogOut, LayoutDashboard, Smartphone } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { LOGO_URL, SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY } from "@/lib/brand";
 
@@ -15,7 +15,7 @@ export default function Navbar({ onOpenAuth }) {
 
   return (
     <header className="glass-header sticky top-0 z-50" data-testid="site-navbar">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-4 flex items-center justify-between gap-6">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-2 flex items-center justify-between gap-6">
         <Link to="/" className="flex items-center" data-testid="navbar-logo">
           <img src={LOGO_URL} alt="OneLightStays" className="h-12 md:h-14 w-auto" />
         </Link>
@@ -33,11 +33,11 @@ export default function Navbar({ onOpenAuth }) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <button className="hidden lg:flex items-center gap-2 px-3 py-2 border border-stone-200 rounded-full text-xs font-medium" data-testid="download-app">
+          {/* <button className="hidden lg:flex items-center gap-2 px-3 py-2 border border-stone-200 rounded-full text-xs font-medium" data-testid="download-app">
             <Smartphone className="w-4 h-4" />
             <span>Download Now</span>
             <span className="bg-rose-100 text-rose-700 px-1.5 py-0.5 text-[0.55rem] rounded">APP</span>
-          </button>
+          </button> */}
 
           {user === undefined ? null : user ? (
             <div className="relative">
@@ -97,7 +97,7 @@ export default function Navbar({ onOpenAuth }) {
                     <div><div className="text-sm font-medium">Call us</div><div className="text-xs text-stone-500">{SUPPORT_PHONE_DISPLAY}</div></div>
                   </a>
                   <a href={`https://wa.me/${SUPPORT_PHONE.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 hover:bg-stone-50 rounded-lg" data-testid="contact-whatsapp">
-                    <div className="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center"><MessageCircle className="w-4 h-4" /></div>
+                    <div className="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center"><MessageCircleMore className="w-4 h-4" /></div>
                     <div><div className="text-sm font-medium">WhatsApp</div><div className="text-xs text-stone-500">Instant inquiry</div></div>
                   </a>
                   <a href="mailto:hello@onelightstays.com" className="flex items-center gap-3 p-3 hover:bg-stone-50 rounded-lg" data-testid="contact-email">

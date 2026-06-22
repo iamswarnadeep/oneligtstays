@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Link, NavLink, Navigate, Routes, Route } from "react-router-dom";
 import { LayoutDashboard, Home as HomeIcon, BedDouble, CalendarCheck, LogOut, IndianRupee, Building2, Users, MapPin, Tag, Layers, Menu, X, Upload, Eye, Plus, Trash2, Edit2 } from "lucide-react";
 import api, { formatError } from "@/lib/api";
@@ -317,8 +317,8 @@ function AdminRooms() {
   const [rooms, setRooms] = useState([]);
   const [editing, setEditing] = useState(null);
   useEffect(() => { api.get("/properties?limit=200").then((r) => { setProps(r.data); if (r.data[0]) setPropId(r.data[0].id); }); }, []);
-  const load = () => { if (propId) api.get("/admin/rooms", { params: { property_id: propId } }).then((r) => setRooms(r.data)); };
-  useEffect(() => { load(); }, [propId]);
+  const load = useCallback(() => { if (propId) api.get("/admin/rooms", { params: { property_id: propId } }).then((r) => setRooms(r.data)); }, [propId]);
+  useEffect(() => { load(); }, [load]);
   const del = async (id) => { if (!window.confirm("Delete room?")) return; await api.delete(`/admin/rooms/${id}`); load(); };
   return (
     <div data-testid="admin-rooms">
