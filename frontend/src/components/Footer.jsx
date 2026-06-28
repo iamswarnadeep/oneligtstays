@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Instagram, Facebook, Twitter, Linkedin, Youtube } from "lucide-react";
+import { LOGO_URL, SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY, SUPPORT_PHONE_2, SUPPORT_PHONE_DISPLAY_2, SUPPORT_EMAIL, SUPPORT_EMAIL_2 } from "@/lib/brand";
 
 export default function Footer() {
   const villas = ["Goa","Karjat","Pune","Panvel","Khandala","Lonavala","Dehradun","Pali","Lakhampur","Manori","Murud Hills","Malad"];
@@ -51,15 +52,11 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <div className="font-semibold text-white mb-3">Travel Guide</div>
-            {/* <div className="bg-stone-900 rounded-md p-3 mb-3">
-              <div className="text-[0.65rem] text-stone-500 uppercase tracking-wider mb-1">States</div>
-              <select className="bg-transparent text-stone-300 text-sm w-full outline-none"><option>Maharashtra</option><option>Kerala</option><option>Karnataka</option></select>
-            </div> */}
-            <div className="bg-stone-900 rounded-md p-3">
-              <div className="text-[0.65rem] text-stone-500 uppercase tracking-wider mb-1">Cities</div>
-              <select className="bg-transparent text-stone-300 text-sm w-full outline-none"><option>Goa</option><option>Rishikesh</option><option>Ukhimath</option><option>Arambol</option></select>
-            </div>
+            <div className="font-semibold text-white mb-3">Support</div>
+            <p className="text-stone-400 text-xs">
+              <span className="font-semibold">Call:</span> <Link to={`tel:${SUPPORT_PHONE}`} className="hover:text-white">{SUPPORT_PHONE_DISPLAY}</Link> / <Link to={`tel:${SUPPORT_PHONE_2}`} className="hover:text-white">{SUPPORT_PHONE_DISPLAY_2}</Link><br />
+              <span className="font-semibold">Email:</span> <Link to={`mailto:${SUPPORT_EMAIL}`} className="hover:text-white">{SUPPORT_EMAIL}</Link> / <Link to={`mailto:${SUPPORT_EMAIL_2}`} className="hover:text-white">{SUPPORT_EMAIL_2}</Link>
+            </p>
           </div>
         </div>
 
@@ -68,7 +65,7 @@ export default function Footer() {
             <Link to="/">Privacy</Link>
             <Link to="/">Terms & Conditions</Link>
             <Link to="/">Sitemap</Link>
-            <Link to="tel:+91 1800 000 000">Call Us</Link>
+            <Link to={`tel:${SUPPORT_PHONE}`}>Call Us</Link>
           </div>
           <div className="flex items-center gap-3">
             <a href="#" className="hover:text-white"><Instagram className="w-4 h-4" /></a>
