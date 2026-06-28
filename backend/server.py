@@ -242,6 +242,22 @@ class UserAdminIn(BaseModel):
     password: Optional[str] = None
 
 
+class PartnerListingUpdateIn(BaseModel):
+    full_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    property_location: Optional[str] = None
+    property_name: Optional[str] = None
+    address: Optional[str] = None
+    rooms_count: Optional[int] = None
+    city: Optional[str] = None
+    country: Optional[str] = None
+    currency: Optional[str] = None
+    plan: Optional[str] = None
+    payment_status: Optional[str] = None
+    notes: Optional[str] = None
+
+
 class RoomIn(BaseModel):
     property_id: str
     room_name: str
@@ -960,6 +976,126 @@ async def admin_upload(file: UploadFile = FastFile(...), _: dict = Depends(requi
     with dest.open("wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     return {"url": f"/api/uploads/{name}", "filename": name}
+
+
+# -----------------------------------------------------------------------------
+# Partner Listing Requests
+# -----------------------------------------------------------------------------
+from fastapi import Form
+
+PARTNER_UPLOAD_DIR = UPLOAD_DIR / "partners"
+PARTNER_UPLOAD_DIR.mkdir(exist_ok=True)
+
+
+def _save_partner_image(file: UploadFile) -> Optional[str]:
+    if not file or not file.filename:
+        return None
+    ext = (file.filename.rsplit(".", 1)[-1] if "." in file.filename else "jpg").lower()
+    if ext not in {"jpg", "jpeg", "png", "webp", "gif"}:
+        return None
+    name = f"{secrets.token_hex(12)}.{ext}"
+    dest = PARTNER_UPLOAD_DIR / name
+    with dest.open("wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    return f"/api/uploads/partners/{name}"
+
+
+@api.post("/partner-listings")
+async def create_partner_listing(
+    full_name: str = Form(...),
+    email: str = Form(...),
+    phone: str = Form(...),
+    property_location: str = Form(...),
+    property_name: str = Form(...),
+    address: str = Form(...),
+    rooms_count: int = Form(...),
+    city: str = Form(...),
+    country: str = Form(...),
+    currency: str = Form(...),
+    agreed_terms: bool = Form(...),
+    plan: str = Form(...),
+    images: List[UploadFile] = FastFile(default=[]),
+):
+    if not agreed_terms:
+        raise HTTPException(400, "You must agree to the terms")
+    if plan not in {"startup", "plus", "executive"}:
+        raise HTTPException(400, "Invalid plan")
+    if len(images) < 25:
+        raise HTTPException(400, f"Please upload at least 25 property images (received {len(images)})")
+
+    image_urls = []
+    for f in images:
+        url = _save_partner_image(f)
+        if url:
+            image_urls.append(url)
+    if len(image_urls) < 25:
+        raise HTTPException(400, "Some images failed to upload. Please retry with valid jpg/png images.")
+
+    plan_fees = {"startup": 14999, "plus": 11999, "executive": 9999}
+    request_number = "PR" + str(int(datetime.now(timezone.utc).timestamp()))[-8:] + secrets.token_hex(2).upper()
+
+    doc = {
+        "request_number": request_number,
+        "full_name": full_name,
+        "email": email.lower(),
+        "phone": phone,
+        "property_location": property_location,
+        "property_name": property_name,
+        "address": address,
+        "rooms_count": int(rooms_count),
+        "city": city,
+        "country": country,
+        "currency": currency,
+        "agreed_terms": True,
+        "plan": plan,
+        "plan_fee": plan_fees[plan],
+        "images": image_urls,
+        "payment_status": "Pending",
+        "status": "new",
+        "created_at": datetime.now(timezone.utc),
+    }
+    res = await db.partner_listings.insert_one(doc)
+    saved = await db.partner_listings.find_one({"_id": res.inserted_id})
+    return {"message": "Listing request received. Our team will reach out shortly.", "request": serialize(saved)}
+
+
+@api.get("/admin/partner-listings")
+async def admin_list_partner_listings(_: dict = Depends(require_admin)):
+    items = await db.partner_listings.find().sort("created_at", -1).to_list(500)
+    return [serialize(p) for p in items]
+
+
+@api.get("/admin/partner-listings/{lid}")
+async def admin_get_partner_listing(lid: str, _: dict = Depends(require_admin)):
+    p = await db.partner_listings.find_one({"_id": ObjectId(lid)})
+    if not p:
+        raise HTTPException(404, "Not found")
+    return serialize(p)
+
+
+@api.put("/admin/partner-listings/{lid}")
+async def admin_update_partner_listing(lid: str, payload: PartnerListingUpdateIn, _: dict = Depends(require_admin)):
+    update = {k: v for k, v in payload.model_dump().items() if v is not None}
+    if "payment_status" in update and update["payment_status"] not in {"Pending", "Paid", "Cancelled", "Refunded"}:
+        raise HTTPException(400, "Invalid payment_status")
+    if update:
+        await db.partner_listings.update_one({"_id": ObjectId(lid)}, {"$set": update})
+    p = await db.partner_listings.find_one({"_id": ObjectId(lid)})
+    return serialize(p)
+
+
+@api.delete("/admin/partner-listings/{lid}")
+async def admin_delete_partner_listing(lid: str, _: dict = Depends(require_admin)):
+    p = await db.partner_listings.find_one({"_id": ObjectId(lid)})
+    if p:
+        for u in p.get("images", []):
+            try:
+                fname = u.rsplit("/", 1)[-1]
+                (PARTNER_UPLOAD_DIR / fname).unlink(missing_ok=True)
+            except Exception:
+                pass
+    await db.partner_listings.delete_one({"_id": ObjectId(lid)})
+    return {"message": "deleted"}
 
 
 # -----------------------------------------------------------------------------

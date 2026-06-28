@@ -87,3 +87,7 @@ credentials.json
 *.key
 .credentials
 frontend/yarn.lock
+<<<<<<< HEAD
+=======
+frontend/node_modules/.cache/default-development/0.pack
+>>>>>>> 1273cb35587a6a10e8a58e9b06d06dbbacc42370

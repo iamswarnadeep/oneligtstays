@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Link, NavLink, Navigate, Routes, Route } from "react-router-dom";
-import { LayoutDashboard, Home as HomeIcon, BedDouble, CalendarCheck, LogOut, IndianRupee, Building2, Users, MapPin, Tag, Layers, Menu, X, Upload, Eye, Plus, Trash2, Edit2 } from "lucide-react";
+import { LayoutDashboard, Home as HomeIcon, BedDouble, CalendarCheck, LogOut, IndianRupee, Building2, Users, MapPin, Tag, Layers, Menu, X, Upload, Eye, Plus, Trash2, Edit2, ClipboardList } from "lucide-react";
 import api, { formatError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { LOGO_URL, inr } from "@/lib/brand";
@@ -10,6 +10,7 @@ const NAV = [
   { to: "/admin/properties", t: "Properties", i: Building2 },
   { to: "/admin/rooms", t: "Rooms", i: BedDouble },
   { to: "/admin/bookings", t: "Bookings", i: CalendarCheck },
+  { to: "/admin/listing-requests", t: "Listing Requests", i: ClipboardList },
   { to: "/admin/destinations", t: "Destinations", i: MapPin },
   { to: "/admin/property-types", t: "Property Types", i: Layers },
   { to: "/admin/offers", t: "Offers", i: Tag },
@@ -58,6 +59,7 @@ export default function AdminLayout() {
           <Route path="properties" element={<AdminProperties />} />
           <Route path="rooms" element={<AdminRooms />} />
           <Route path="bookings" element={<AdminBookings />} />
+          <Route path="listing-requests" element={<AdminListingRequests />} />
           <Route path="destinations" element={<AdminDestinations />} />
           <Route path="property-types" element={<AdminPropertyTypes />} />
           <Route path="offers" element={<AdminOffers />} />
@@ -749,6 +751,176 @@ function UserEditor({ item, onClose }) {
         <div className="flex gap-2 justify-end pt-2">
           <button type="button" onClick={onClose} className="btn-outline">Cancel</button>
           <button className="btn-primary" data-testid="save-user">Save</button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+// =============================================================================
+// LISTING REQUESTS (Partner sign-ups)
+// =============================================================================
+function AdminListingRequests() {
+  const [items, setItems] = useState([]);
+  const [view, setView] = useState(null);
+  const [editing, setEditing] = useState(null);
+  const load = () => api.get("/admin/partner-listings").then((r) => setItems(r.data));
+  useEffect(() => { load(); }, []);
+  const del = async (id) => { if (!window.confirm("Delete this listing request?")) return; await api.delete(`/admin/partner-listings/${id}`); load(); };
+  const updatePayment = async (id, payment_status) => { await api.put(`/admin/partner-listings/${id}`, { payment_status }); load(); };
+
+  const PLAN_LABEL = { startup: "Startup", plus: "Plus", executive: "Executive" };
+  const PAY_COLOR = { Pending: "bg-amber-50 text-amber-700", Paid: "bg-emerald-50 text-emerald-700", Cancelled: "bg-stone-100 text-stone-600", Refunded: "bg-red-50 text-red-700" };
+
+  return (
+    <div data-testid="admin-listing-requests">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="font-display text-2xl md:text-3xl">Listing Requests</h1>
+        <div className="text-sm text-stone-500">{items.length} total</div>
+      </div>
+      <div className="bg-white border border-stone-200 rounded-xl overflow-x-auto">
+        <table className="w-full text-sm min-w-[820px]">
+          <thead className="bg-stone-50 text-stone-600">
+            <tr>
+              <th className="text-left p-3">#</th>
+              <th className="text-left p-3">Contact</th>
+              <th className="text-left p-3">Property</th>
+              <th className="text-left p-3">Rooms</th>
+              <th className="text-left p-3">Plan</th>
+              <th className="text-left p-3">Fee</th>
+              <th className="text-left p-3">Payment</th>
+              <th className="text-left p-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((p) => (
+              <tr key={p.id} className="border-t border-stone-100" data-testid={`listing-${p.id}`}>
+                <td className="p-3 font-mono text-xs">{p.request_number}</td>
+                <td className="p-3">
+                  <div className="font-medium">{p.full_name}</div>
+                  <div className="text-xs text-stone-500">{p.email}</div>
+                  <div className="text-xs text-stone-500">{p.phone}</div>
+                </td>
+                <td className="p-3">
+                  <div className="font-medium">{p.property_name}</div>
+                  <div className="text-xs text-stone-500">{p.city}, {p.country}</div>
+                </td>
+                <td className="p-3">{p.rooms_count}</td>
+                <td className="p-3">{PLAN_LABEL[p.plan] || p.plan}</td>
+                <td className="p-3">{inr(p.plan_fee)} <span className="text-[0.6rem] text-stone-500">{p.currency}</span></td>
+                <td className="p-3">
+                  <select value={p.payment_status} onChange={(e) => updatePayment(p.id, e.target.value)} className={`border border-stone-300 rounded px-2 py-1 text-xs ${PAY_COLOR[p.payment_status] || ""}`} data-testid={`payment-status-${p.id}`}>
+                    {["Pending", "Paid", "Cancelled", "Refunded"].map((s) => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </td>
+                <td className="p-3 text-right whitespace-nowrap">
+                  <button onClick={() => setView(p)} className="text-stone-700 mr-2" data-testid={`view-listing-${p.id}`} title="View"><Eye className="w-4 h-4 inline" /></button>
+                  <button onClick={() => setEditing(p)} className="text-stone-700 mr-2" data-testid={`edit-listing-${p.id}`} title="Edit"><Edit2 className="w-4 h-4 inline" /></button>
+                  <button onClick={() => del(p.id)} className="text-red-700" data-testid={`delete-listing-${p.id}`} title="Delete"><Trash2 className="w-4 h-4 inline" /></button>
+                </td>
+              </tr>
+            ))}
+            {items.length === 0 && <tr><td colSpan={8} className="p-8 text-center text-stone-500">No listing requests yet.</td></tr>}
+          </tbody>
+        </table>
+      </div>
+
+      {view && <ListingRequestView request={view} onClose={() => { setView(null); load(); }} onUpdatePayment={updatePayment} />}
+      {editing && <ListingRequestEditor request={editing} onClose={() => { setEditing(null); load(); }} />}
+    </div>
+  );
+}
+
+function ListingRequestView({ request, onClose, onUpdatePayment }) {
+  const BACKEND = process.env.REACT_APP_BACKEND_URL;
+  return (
+    <Modal onClose={onClose}>
+      <div className="space-y-4" data-testid="listing-view-modal">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="font-display text-xl md:text-2xl">{request.property_name}</div>
+            <div className="text-xs font-mono text-stone-500 mt-1">{request.request_number}</div>
+          </div>
+          <select defaultValue={request.payment_status} onChange={(e) => onUpdatePayment(request.id, e.target.value)} className="border border-stone-300 rounded px-2 py-1 text-xs">
+            {["Pending", "Paid", "Cancelled", "Refunded"].map((s) => <option key={s}>{s}</option>)}
+          </select>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+          <KV label="Full Name" value={request.full_name} />
+          <KV label="Email" value={request.email} />
+          <KV label="Phone" value={request.phone} />
+          <KV label="Property Location" value={request.property_location} />
+          <KV label="Address" value={request.address} />
+          <KV label="City / Country" value={`${request.city}, ${request.country}`} />
+          <KV label="Number of Rooms" value={request.rooms_count} />
+          <KV label="Currency" value={request.currency} />
+          <KV label="Plan" value={`${request.plan} — ${inr(request.plan_fee)}`} />
+          <KV label="Agreed Terms" value={request.agreed_terms ? "Yes" : "No"} />
+          <KV label="Submitted At" value={new Date(request.created_at).toLocaleString()} />
+        </div>
+        <div className="border-t border-stone-200 pt-4">
+          <div className="font-semibold text-sm mb-3">Property Photos <span className="text-stone-500 font-normal">({request.images?.length || 0})</span></div>
+          <div className="grid grid-cols-3 md:grid-cols-5 gap-2 max-h-96 overflow-y-auto" data-testid="listing-photos">
+            {(request.images || []).map((u, i) => {
+              const full = u.startsWith("http") ? u : BACKEND + u;
+              return (
+                <a key={i} href={full} target="_blank" rel="noreferrer" className="aspect-square rounded-md overflow-hidden border border-stone-200 hover:scale-105 transition">
+                  <img src={full} alt={`property-${i}`} className="w-full h-full object-cover" />
+                </a>
+              );
+            })}
+          </div>
+        </div>
+        <div className="flex justify-end pt-2"><button onClick={onClose} className="btn-outline">Close</button></div>
+      </div>
+    </Modal>
+  );
+}
+
+function ListingRequestEditor({ request, onClose }) {
+  const [f, setF] = useState({
+    full_name: request.full_name || "", email: request.email || "", phone: request.phone || "",
+    property_location: request.property_location || "", property_name: request.property_name || "",
+    address: request.address || "", rooms_count: request.rooms_count || 1,
+    city: request.city || "", country: request.country || "", currency: request.currency || "INR",
+    plan: request.plan || "plus", payment_status: request.payment_status || "Pending",
+    notes: request.notes || "",
+  });
+  const [err, setErr] = useState("");
+  const save = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/admin/partner-listings/${request.id}`, { ...f, rooms_count: +f.rooms_count });
+      onClose();
+    } catch (e) { setErr(formatError(e)); }
+  };
+  return (
+    <Modal onClose={onClose}>
+      <form onSubmit={save} className="space-y-3" data-testid="listing-editor">
+        <div className="font-display text-xl">Edit Listing Request</div>
+        {err && <div className="text-red-700 text-sm">{err}</div>}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Field label="Full Name" v={f.full_name} on={(v) => setF({ ...f, full_name: v })} />
+          <Field label="Email" v={f.email} on={(v) => setF({ ...f, email: v })} />
+          <Field label="Phone" v={f.phone} on={(v) => setF({ ...f, phone: v })} />
+          <Field label="Property Name" v={f.property_name} on={(v) => setF({ ...f, property_name: v })} />
+        </div>
+        <Field label="Property Location" v={f.property_location} on={(v) => setF({ ...f, property_location: v })} textarea />
+        <Field label="Address" v={f.address} on={(v) => setF({ ...f, address: v })} textarea />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Field label="Rooms" type="number" v={f.rooms_count} on={(v) => setF({ ...f, rooms_count: v })} />
+          <Field label="City" v={f.city} on={(v) => setF({ ...f, city: v })} />
+          <Field label="Country" v={f.country} on={(v) => setF({ ...f, country: v })} />
+          <Field label="Currency" v={f.currency} on={(v) => setF({ ...f, currency: v })} />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Select label="Plan" v={f.plan} on={(v) => setF({ ...f, plan: v })} options={["startup", "plus", "executive"]} />
+          <Select label="Payment Status" v={f.payment_status} on={(v) => setF({ ...f, payment_status: v })} options={["Pending", "Paid", "Cancelled", "Refunded"]} />
+        </div>
+        <Field label="Internal Notes" v={f.notes} on={(v) => setF({ ...f, notes: v })} textarea />
+        <div className="flex gap-2 justify-end pt-2">
+          <button type="button" onClick={onClose} className="btn-outline">Cancel</button>
+          <button className="btn-primary" data-testid="save-listing">Save</button>
         </div>
       </form>
     </Modal>
