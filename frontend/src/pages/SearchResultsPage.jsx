@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { SlidersHorizontal, Star, Map, ChevronDown } from "lucide-react";
+import { SlidersHorizontal, Star, Map, ChevronDown, ChevronUp } from "lucide-react";
 import api from "@/lib/api";
 import SearchWidget from "@/components/SearchWidget";
 import PropertyCard from "@/components/PropertyCard";
@@ -69,11 +69,23 @@ export default function SearchResultsPage({ onAuth }) {
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8 grid lg:grid-cols-[280px_1fr] gap-4">
         <button
           type="button"
-          className="lg:hidden w-full py-3 px-4 rounded-2xl bg-white border border-stone-200 text-stone-900 font-semibold text-left"
+          className="flex justify-between items-center lg:hidden w-full py-3 px-4 rounded-2xl bg-white border border-stone-200 text-stone-900 font-semibold text-left"
           onClick={() => setShowFiltersMobile((open) => !open)}
           data-testid="mobile-filter-toggle"
         >
-          {showFiltersMobile ? "Hide Filter" : " Show Filter"}
+          {/* {showFiltersMobile ? "Hide Filter" : " Show Filter"} */}
+
+          {showFiltersMobile ? (
+            <>
+              Hide Filter
+              <ChevronUp size={18} /> 
+            </>
+          ) : (
+            <>
+              Show Filter
+              <ChevronDown size={18} />
+            </>
+          )}
         </button>
 
         {/* FILTERS */}

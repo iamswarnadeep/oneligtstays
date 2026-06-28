@@ -49,7 +49,7 @@ export default function HomePage({ onAuth }) {
   return (
     <div data-testid="home-page" className="bg-white">
       {/* HERO BANNER WITH VIDEO BACKGROUND */}
-      <section className="relative h-[60vh] md:h-[80vh] min-h-[480px] overflow-hidden">
+      <section className="relative h-[70vh] md:h-[80vh] min-h-[480px] overflow-hidden">
         <video
           src={HERO_VIDEO} poster={HERO_FALLBACK}
           autoPlay muted loop playsInline preload="auto"
@@ -71,7 +71,7 @@ export default function HomePage({ onAuth }) {
       </section>
 
       {/* SEARCH PILL */}
-      <div className="relative z-10 mt-[-2rem] px-6 lg:px-10">
+      <div className="relative z-10 mt-[-7rem] lg:mt-[-2rem] px-6 lg:px-10">
         <div className="max-w-6xl mx-auto"><SearchWidget /></div>
       </div>
 
