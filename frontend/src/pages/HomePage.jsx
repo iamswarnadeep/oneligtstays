@@ -5,9 +5,8 @@ import api from "@/lib/api";
 import SearchWidget from "@/components/SearchWidget";
 import PropertyCard from "@/components/PropertyCard";
 import { inr } from "@/lib/brand";
-
-const HERO_VIDEO = "https://cdn.pixabay.com/video/2026/02/15/334716_large.mp4";
-const HERO_FALLBACK = "https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?w=2000&q=85";
+import HERO_FALLBACK from "@/assets/bannerImg.png";
+import HERO_VIDEO from "@/assets/bannerVideo.mp4";
 
 const HEROES = [
   { title: "Sunday Getaway Sale", subtitle: "20% Off on some stays" },

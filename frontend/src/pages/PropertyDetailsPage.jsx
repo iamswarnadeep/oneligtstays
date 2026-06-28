@@ -5,6 +5,7 @@ import api, { formatError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { inr, inrDec, SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY } from "@/lib/brand";
 import DatePicker from "@/components/DatePicker";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" }, { id: "highlights", label: "Highlights" },
@@ -38,6 +39,8 @@ export default function PropertyDetailsPage({ onAuth }) {
   const [lightbox, setLightbox] = useState(null); // index or null
   const [wishlisted, setWishlisted] = useState(false);
   const sectionRefs = useRef({});
+  const tabsRef = useRef(null);
+  const tabRefs = useRef({});
 
   useEffect(() => {
     setLoading(true);
@@ -87,6 +90,41 @@ export default function PropertyDetailsPage({ onAuth }) {
     if (el) { window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: "smooth" }); }
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const offset = 140;
+      const currentScroll = window.scrollY + offset + 10;
+      let currentSection = SECTIONS[0].id;
+
+      for (const section of SECTIONS) {
+        const el = sectionRefs.current[section.id];
+        if (!el) continue;
+        if (el.offsetTop <= currentScroll) {
+          currentSection = section.id;
+        } else {
+          break;
+        }
+      }
+
+      setActiveSection((prev) => (prev === currentSection ? prev : currentSection));
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [prop]);
+
+  useEffect(() => {
+    const activeTab = tabRefs.current[activeSection];
+    if (!activeTab || !tabsRef.current) return;
+    activeTab.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, [activeSection]);
+
   const share = async () => {
     const url = window.location.href;
     if (navigator.share) {
@@ -125,7 +163,7 @@ export default function PropertyDetailsPage({ onAuth }) {
 
       {/* GALLERY WITH LIGHTBOX */}
       <div className="max-w-7xl mx-auto px-6 lg:px-10 mb-8">
-        <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[60vh] rounded-2xl overflow-hidden" data-testid="property-gallery">
+        <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-2 h-[60vh] rounded-2xl overflow-hidden" data-testid="property-gallery">
           <button onClick={() => setLightbox(0)} className="col-span-4 md:col-span-2 row-span-2 relative overflow-hidden bg-stone-100">
             {images[0] && <img src={images[0]} alt={prop.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />}
             <div className="absolute top-4 left-4 badge badge-light"><Star className="w-3 h-3 fill-stone-900 text-stone-900" /> Best Rated</div>
@@ -143,14 +181,40 @@ export default function PropertyDetailsPage({ onAuth }) {
             </div>
           </button>
         </div>
+        <div className="block md:hidden">
+          <Carousel opts={{ align: "center", containScroll: "trimSnaps", dragFree: false }} className=" overflow-hidden">
+            <CarouselContent className="touch-pan-y w-[93%]">
+              {images.map((img, i) => (
+                <CarouselItem key={i}>
+                  <button onClick={() => setLightbox(i)} className="relative overflow-hidden bg-stone-100 rounded-2xl h-[60vw] max-h-[60vh] w-full">
+                    <img src={img} alt={prop.title} className="w-full h-full object-cover" />
+                    {i === 0 && (
+                      <div className="absolute top-4 left-4 badge badge-light"><Star className="w-3 h-3 fill-stone-900 text-stone-900" /> Best Rated</div>
+                    )}
+                  </button>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </div>
       </div>
 
       {/* TAB NAV */}
-      <div className="sticky top-[65px] md:top-[73px] z-30 bg-white border-b border-stone-200">
+      <div className="sticky top-[62px] md:top-[73px] z-30 bg-white border-b border-stone-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="section-tabs no-scrollbar" data-testid="section-tabs">
+          <div ref={tabsRef} className="section-tabs no-scrollbar" data-testid="section-tabs">
             {SECTIONS.map((s) => (
-              <button key={s.id} onClick={() => { setActiveSection(s.id); scrollTo(s.id); }} className={`section-tab ${activeSection === s.id ? "active" : ""}`} data-testid={`tab-${s.id}`}>{s.label}</button>
+              <button
+                ref={(el) => {
+                  if (el) tabRefs.current[s.id] = el;
+                  else delete tabRefs.current[s.id];
+                }}
+                key={s.id}
+                onClick={() => { setActiveSection(s.id); scrollTo(s.id); }}
+                className={`section-tab ${activeSection === s.id ? "active" : ""}`}
+                data-testid={`tab-${s.id}`}>
+                {s.label}
+              </button>
             ))}
           </div>
         </div>
