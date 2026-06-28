@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { SlidersHorizontal, Star, Map, ChevronDown } from "lucide-react";
+import { SlidersHorizontal, Star, Map, ChevronDown, ChevronUp } from "lucide-react";
 import api from "@/lib/api";
 import SearchWidget from "@/components/SearchWidget";
 import PropertyCard from "@/components/PropertyCard";
@@ -31,6 +31,7 @@ export default function SearchResultsPage({ onAuth }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState("popular");
+  const [showFiltersMobile, setShowFiltersMobile] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -59,18 +60,39 @@ export default function SearchResultsPage({ onAuth }) {
   return (
     <div data-testid="search-page" className="bg-stone-50 min-h-screen">
       {/* COMPACT SEARCH HEADER */}
-      <div className="bg-white border-b border-stone-200 sticky top-[73px] z-20">
+      <div className="bg-white border-b border-stone-200 static md:sticky top-[73px] z-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-4">
           <SearchWidget initial={initial} />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8 grid lg:grid-cols-[280px_1fr] gap-8">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8 grid lg:grid-cols-[280px_1fr] gap-4">
+        <button
+          type="button"
+          className="flex justify-between items-center lg:hidden w-full py-3 px-4 rounded-2xl bg-white border border-stone-200 text-stone-900 font-semibold text-left"
+          onClick={() => setShowFiltersMobile((open) => !open)}
+          data-testid="mobile-filter-toggle"
+        >
+          {/* {showFiltersMobile ? "Hide Filter" : " Show Filter"} */}
+
+          {showFiltersMobile ? (
+            <>
+              Hide Filter
+              <ChevronUp size={18} /> 
+            </>
+          ) : (
+            <>
+              Show Filter
+              <ChevronDown size={18} />
+            </>
+          )}
+        </button>
+
         {/* FILTERS */}
-        <aside className="bg-white border border-stone-200 rounded-2xl p-5 h-fit lg:sticky lg:top-[180px]" data-testid="filters-sidebar">
-          <button className="w-full btn-outline text-sm mb-5">
-            <Map className="w-4 h-4" /> View on Map
-          </button>
+        <aside
+          className={`bg-white border border-stone-200 rounded-2xl p-5 h-fit lg:sticky lg:top-[180px] lg:block ${showFiltersMobile ? "block" : "hidden"} lg:visible`}
+          data-testid="filters-sidebar"
+        >
           <label className="flex items-center justify-between text-sm mb-5">
             <span>Display Total Price <div className="text-xs text-stone-500">Price per night with taxes</div></span>
             <input type="checkbox" className="w-9 h-5 accent-stone-900" data-testid="display-total-price" />

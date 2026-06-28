@@ -126,9 +126,31 @@ body {
 .pill-tab.active { background: #0A0A0A; color: #fff; }
 
 /* Section tab nav */
-.section-tabs { display: flex; gap: 2rem; border-bottom: 1px solid #E5E5E5; overflow-x: auto; }
-.section-tab { padding: 1rem 0; font-size: 0.875rem; font-weight: 600; color: #6B6B6B; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
-.section-tab.active { color: #0A0A0A; border-bottom-color: #0A0A0A; }
+.section-tabs {
+  display: flex;
+  gap: 2rem;
+  border-bottom: 1px solid #E5E5E5;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.4rem;
+}
+.section-tab {
+  flex: 0 0 auto;
+  min-width: 4rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6B6B6B;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.section-tab.active {
+  color: #0A0A0A;
+  border-bottom-color: #0A0A0A;
+}
 
 /* Badge */
 .badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.65rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; }

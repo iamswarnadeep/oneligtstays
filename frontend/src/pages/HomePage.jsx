@@ -5,9 +5,8 @@ import api from "@/lib/api";
 import SearchWidget from "@/components/SearchWidget";
 import PropertyCard from "@/components/PropertyCard";
 import { inr } from "@/lib/brand";
-
-const HERO_VIDEO = "https://cdn.pixabay.com/video/2026/02/15/334716_large.mp4";
-const HERO_FALLBACK = "https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?w=2000&q=85";
+import HERO_FALLBACK from "@/assets/bannerImg.png";
+import HERO_VIDEO from "@/assets/bannerVideo.mp4";
 
 const HEROES = [
   { title: "Sunday Getaway Sale", subtitle: "20% Off on some stays" },
@@ -50,7 +49,7 @@ export default function HomePage({ onAuth }) {
   return (
     <div data-testid="home-page" className="bg-white">
       {/* HERO BANNER WITH VIDEO BACKGROUND */}
-      <section className="relative h-[60vh] md:h-[80vh] min-h-[480px] overflow-hidden">
+      <section className="relative h-[70vh] md:h-[80vh] min-h-[480px] overflow-hidden">
         <video
           src={HERO_VIDEO} poster={HERO_FALLBACK}
           autoPlay muted loop playsInline preload="auto"
@@ -72,7 +71,7 @@ export default function HomePage({ onAuth }) {
       </section>
 
       {/* SEARCH PILL */}
-      <div className="relative z-10 mt-[-2rem] px-6 lg:px-10">
+      <div className="relative z-10 mt-[-7rem] lg:mt-[-2rem] px-6 lg:px-10">
         <div className="max-w-6xl mx-auto"><SearchWidget /></div>
       </div>
 
@@ -208,7 +207,7 @@ export default function HomePage({ onAuth }) {
       </section> */}
 
       {/* CTA */}
-      {/* <section className="my-20">
+      <section className="my-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="bg-rose-50 border border-rose-100 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
@@ -218,7 +217,7 @@ export default function HomePage({ onAuth }) {
             <button className="btn-primary" data-testid="list-property-cta">List Now</button>
           </div>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 }
