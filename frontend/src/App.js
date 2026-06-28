@@ -17,6 +17,7 @@ import RefundPolicyPage from "@/pages/RefundPolicyPage";
 import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
 import TermsPage from "@/pages/TermsPage";
 import AboutUsPage from "@/pages/AboutUsPage";
+import BecomePartnerPage from "@/pages/BecomePartnerPage";
 import "@/App.css";
 
 function ScrollToTop() {
@@ -71,6 +72,7 @@ function Shell() {
                 <Route path="/refund-policy" element={<RefundPolicyPage />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                 <Route path="/terms-and-conditions" element={<TermsPage />} />
+                <Route path="/become-a-partner" element={<BecomePartnerPage />} />
               </Routes>
               <Footer />
             </>
