@@ -214,7 +214,7 @@ export default function HomePage({ onAuth }) {
               <div className="font-display text-2xl">List your property with us</div>
               <div className="text-sm text-stone-600 mt-1">Join our network and turn your property into a high-revenue holiday destination.</div>
             </div>
-            <button className="btn-primary" data-testid="list-property-cta">List Now</button>
+            <button className="btn-primary" data-testid="list-property-cta"><a href="/become-a-partner" target="_blank" rel="noopener noreferrer">List Now</a></button>
           </div>
         </div>
       </section>

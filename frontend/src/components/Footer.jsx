@@ -59,6 +59,9 @@ export default function Footer() {
             <p className="text-stone-400 text-xs">
               <span className="font-semibold">Call:</span> <Link to={`tel:${SUPPORT_PHONE}`} className="hover:text-white">{SUPPORT_PHONE_DISPLAY}</Link> / <Link to={`tel:${SUPPORT_PHONE_2}`} className="hover:text-white">{SUPPORT_PHONE_DISPLAY_2}</Link><br />
               <span className="font-semibold">Email:</span> <Link to={`mailto:${SUPPORT_EMAIL}`} className="hover:text-white">{SUPPORT_EMAIL}</Link> / <Link to={`mailto:${SUPPORT_EMAIL_2}`} className="hover:text-white">{SUPPORT_EMAIL_2}</Link>
+             <span className="block mt-2">
+              <button className="px-2 py-1 font-semibold bg-white border border-white text-black rounded-full text-xs hover:bg-black hover:text-white"><a href="/become-a-partner" target="_blank" rel="noopener noreferrer">Become a Partner</a>  </button>   
+             </span>
             </p>
           </div>
         </div>
@@ -70,11 +73,8 @@ export default function Footer() {
             <Link to={`tel:${SUPPORT_PHONE}`}>Call Us</Link>
           </div>
           <div className="flex items-center gap-3">
-            <a href="#" className="hover:text-white"><Instagram className="w-4 h-4" /></a>
-            <a href="#" className="hover:text-white"><Facebook className="w-4 h-4" /></a>
-            <a href="#" className="hover:text-white"><Twitter className="w-4 h-4" /></a>
-            <a href="#" className="hover:text-white"><Linkedin className="w-4 h-4" /></a>
-            <a href="#" className="hover:text-white"><Youtube className="w-4 h-4" /></a>
+            <a href="https://www.instagram.com/onelightstays?igsh=dG1wb2YwNnYzbnV6" target="_blank" className="hover:text-white"><Instagram className="w-4 h-4" /></a>
+            <a href="https://www.linkedin.com/company/one-light-stays/" target="_blank" className="hover:text-white"><Linkedin className="w-4 h-4" /></a>
           </div>
         </div>
       </div>
