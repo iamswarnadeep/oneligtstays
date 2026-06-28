@@ -11,6 +11,12 @@ import ProfilePage from "@/pages/ProfilePage";
 import AdminLayout from "@/pages/AdminLayout";
 import CheckoutPage from "@/pages/CheckoutPage";
 import OrderConfirmationPage from "@/pages/OrderConfirmationPage";
+import ContactUsPage from "@/pages/ContactUsPage";
+import CancellationPolicyPage from "@/pages/CancellationPolicyPage";
+import RefundPolicyPage from "@/pages/RefundPolicyPage";
+import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
+import TermsPage from "@/pages/TermsPage";
+import AboutUsPage from "@/pages/AboutUsPage";
 import "@/App.css";
 
 function ScrollToTop() {
@@ -59,6 +65,12 @@ function Shell() {
                   element={<OrderConfirmationPage />}
                 />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/contact" element={<ContactUsPage />} />
+                <Route path="/about-us" element={<AboutUsPage />} />
+                <Route path="/cancellation-policy" element={<CancellationPolicyPage />} />
+                <Route path="/refund-policy" element={<RefundPolicyPage />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                <Route path="/terms-and-conditions" element={<TermsPage />} />
               </Routes>
               <Footer />
             </>

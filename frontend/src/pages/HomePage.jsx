@@ -207,7 +207,7 @@ export default function HomePage({ onAuth }) {
       </section> */}
 
       {/* CTA */}
-      {/* <section className="my-20">
+      <section className="my-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="bg-rose-50 border border-rose-100 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
@@ -217,7 +217,7 @@ export default function HomePage({ onAuth }) {
             <button className="btn-primary" data-testid="list-property-cta">List Now</button>
           </div>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 }

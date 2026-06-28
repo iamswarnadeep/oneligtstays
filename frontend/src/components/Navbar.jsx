@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Phone, Mail, MessageCircleMore, ChevronDown, User, Menu, X, Heart, LogOut, LayoutDashboard, Smartphone } from "lucide-react";
+import { Phone, Mail, MessageCircleMore, ChevronDown, User, Menu, X, Heart, LogOut, LayoutDashboard, Handshake  } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { LOGO_URL, SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY, SUPPORT_EMAIL } from "@/lib/brand";
 
@@ -33,11 +33,12 @@ export default function Navbar({ onOpenAuth }) {
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* <button className="hidden lg:flex items-center gap-2 px-3 py-2 border border-stone-200 rounded-full text-xs font-medium" data-testid="download-app">
-            <Smartphone className="w-4 h-4" />
-            <span>Download Now</span>
-            <span className="bg-rose-100 text-rose-700 px-1.5 py-0.5 text-[0.55rem] rounded">APP</span>
-          </button> */}
+          <button className="hidden lg:flex items-center gap-2 px-3 py-2 border border-stone-200 rounded-full text-xs font-medium" data-testid="download-app">
+            <Handshake  className="w-4 h-4" />
+            <Link to="/become-a-partner" className="hover:text-stone-600 transition">
+              <span>Become a Partner</span>
+            </Link>
+          </button>
 
           {user === undefined ? null : user ? (
             <div className="relative">
