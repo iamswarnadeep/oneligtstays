@@ -48,8 +48,8 @@ export default function BecomePartnerPage() {
           <h1 className="font-display text-4xl md:text-6xl text-white max-w-3xl leading-tight">Turn your property into a high-revenue holiday destination</h1>
           <p className="text-white/85 mt-4 max-w-2xl text-base md:text-lg">Join OneLightStays' curated network. Get exposure, expert support, and grow your bookings — without the headaches of running it alone.</p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <a href="#onboard-form" className="btn-primary" data-testid="hero-cta">Start Listing — Receive a Callback</a>
-            <a href={`tel:${SUPPORT_PHONE}`} className="btn-outline"><Phone className="w-4 h-4" /> {SUPPORT_PHONE_DISPLAY}</a>
+            {/* <a href="#onboard-form" className="btn-primary" data-testid="hero-cta">Start Listing — Receive a Callback</a>
+            <a href={`tel:${SUPPORT_PHONE}`} className="btn-outline"><Phone className="w-4 h-4" /> {SUPPORT_PHONE_DISPLAY}</a> */}
           </div>
         </div>
       </section>
